@@ -15,10 +15,26 @@ import bckgImage from './../assets/main-screen-chicken.png';
 
 function LoginScreen({ navigation }): JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
+    function handleUsernameChange(text: string) {
+        setUsername(text);
+    }
+
+    function handlePasswordChange(text: string) {
+        setPassword(text);
+    }
+
+    function handleLogin() {
+        console.log('Login pressed! Username: ' + username + ' Password: ' + password);
+    }
 
     const backgroundStyle = {
         backgroundColor: isDarkMode ? 'black' : 'white'
     };
+
+
 
     return (
         <SafeAreaView style={[styles.safeArea, backgroundStyle]}>
@@ -36,30 +52,33 @@ function LoginScreen({ navigation }): JSX.Element {
                         <TextInput
                             style={styles.input}
                             placeholder="Username"
+                            onChangeText={handleUsernameChange}
                         />
                         <TextInput
                             style={styles.input}
                             placeholder="Password"
                             secureTextEntry
+                            onChangeText={handlePasswordChange}
                         />
                     </View>
                     <View style={styles.buttonContainer}>
                         <Button
                         title="Login"
                         onPress={() => {
-                            // Handle regular login logic here
+                            handleLogin();
+                            navigation.navigate('Home')
                         }}
                         />
                         <Button
                         title="Login with Google"
                         onPress={() => {
-                            // Handle login with Google logic here
+                            navigation.navigate('Home')
                         }}
                         />
                     </View>
                     <TouchableOpacity
                         onPress={() => {
-                            // Navigate to the Signup screen or perform the signup action
+                            navigation.navigate('Home')
                         }}
                     >
                         <Text style={[styles.signupLink, styles.textShadow]}>Don't have an account? Sign up here</Text>
