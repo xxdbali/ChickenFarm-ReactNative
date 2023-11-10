@@ -12,11 +12,18 @@ import {
     TextInput
 } from 'react-native';
 import bckgImage from './../assets/main-screen-chicken.png';
+import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
+import CheckBox from '@react-native-community/checkbox';
+
+const userStorage =  new MMKVLoader().withEncryption().withInstanceID('userdata').initialize();
 
 function LoginScreen({ navigation }): JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
+
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+
+    const [isAcceptedTheTermsAndConditions, setIsAcceptedTheTermsAndConditions] = useMMKVStorage('isAcceptedTheTermsAndConditions', userStorage, false);    
 
     function handleUsernameChange(text: string) {
         setUsername(text);
@@ -33,8 +40,6 @@ function LoginScreen({ navigation }): JSX.Element {
     const backgroundStyle = {
         backgroundColor: isDarkMode ? 'black' : 'white'
     };
-
-
 
     return (
         <SafeAreaView style={[styles.safeArea, backgroundStyle]}>
@@ -60,25 +65,30 @@ function LoginScreen({ navigation }): JSX.Element {
                             secureTextEntry
                             onChangeText={handlePasswordChange}
                         />
+                        <CheckBox
+                            disabled={false}
+                            value={isAcceptedTheTermsAndConditions}
+                            onValueChange={(isAccepted) => setIsAcceptedTheTermsAndConditions(isAccepted)}
+                        />
                     </View>
                     <View style={styles.buttonContainer}>
                         <Button
                         title="Login"
                         onPress={() => {
                             handleLogin();
-                            navigation.navigate('Home')
+                            navigation.navigate('InitScreen')
                         }}
                         />
                         <Button
                         title="Login with Google"
                         onPress={() => {
-                            navigation.navigate('Home')
+                            navigation.navigate('InitScreen')
                         }}
                         />
                     </View>
                     <TouchableOpacity
                         onPress={() => {
-                            navigation.navigate('Home')
+                            navigation.navigate('InitScreen')
                         }}
                     >
                         <Text style={[styles.signupLink, styles.textShadow]}>Don't have an account? Sign up here</Text>
