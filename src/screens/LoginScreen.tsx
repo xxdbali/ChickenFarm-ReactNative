@@ -17,13 +17,11 @@ import CheckBox from '@react-native-community/checkbox';
 
 const userStorage =  new MMKVLoader().withEncryption().withInstanceID('userdata').initialize();
 
-function LoginScreen({ navigation }): JSX.Element {
-    const isDarkMode = useColorScheme() === 'dark';
+function LoginScreen({ navigation }): JSX.Element {    
+    const [keepLoggedIn, setKeepLoggedIn] = useMMKVStorage('keepLoggedIn', userStorage, false);
 
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
-
-    const [isAcceptedTheTermsAndConditions, setIsAcceptedTheTermsAndConditions] = useMMKVStorage('isAcceptedTheTermsAndConditions', userStorage, false);    
 
     function handleUsernameChange(text: string) {
         setUsername(text);
@@ -38,13 +36,13 @@ function LoginScreen({ navigation }): JSX.Element {
     }
 
     const backgroundStyle = {
-        backgroundColor: isDarkMode ? 'black' : 'white'
+        backgroundColor: 'saddlebrown',
     };
 
     return (
         <SafeAreaView style={[styles.safeArea, backgroundStyle]}>
             <StatusBar
-                barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+                barStyle={'dark-content'}
                 backgroundColor={backgroundStyle.backgroundColor}
             />
             <ImageBackground
@@ -67,8 +65,8 @@ function LoginScreen({ navigation }): JSX.Element {
                         />
                         <CheckBox
                             disabled={false}
-                            value={isAcceptedTheTermsAndConditions}
-                            onValueChange={(isAccepted) => setIsAcceptedTheTermsAndConditions(isAccepted)}
+                            value={keepLoggedIn}
+                            onValueChange={(isAccepted) => setKeepLoggedIn(isAccepted)}
                         />
                     </View>
                     <View style={styles.buttonContainer}>

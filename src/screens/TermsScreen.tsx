@@ -21,16 +21,27 @@ const userStorage = new MMKVLoader().withEncryption().withInstanceID('userdata')
 
 function TermnsScreen({ navigation }): JSX.Element {
     const isDarkMode = useColorScheme() === 'dark';
+    const [isAcceptedTheTermsAndConditions, setIsAcceptedTheTermsAndConditions] = useMMKVStorage('isAcceptedTheTermsAndConditions', userStorage, false);
 
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [checkedAgree, setCheckedAgree] = React.useState(isAcceptedTheTermsAndConditions);
 
-    const [isAcceptedTheTermsAndConditions, setIsAcceptedTheTermsAndConditions] = useMMKVStorage('isAcceptedTheTermsAndConditions', userStorage, false);
+    
 
+    // skip this screen if the terms are already accepted
+    if (isAcceptedTheTermsAndConditions) {
+        // testing, every second time asks after accepting
+        setIsAcceptedTheTermsAndConditions(false)
+        return navigation.navigate('Login')
+    }
+
+    // handle username onchage
     function handleUsernameChange(text: string) {
         setUsername(text);
     }
 
+    // handle password onchage
     function handlePasswordChange(text: string) {
         setPassword(text);
     }
@@ -39,15 +50,11 @@ function TermnsScreen({ navigation }): JSX.Element {
         console.log('Login pressed! Username: ' + username + ' Password: ' + password);
     }
 
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? 'black' : 'white'
-    };
-
     return (
-        <SafeAreaView style={[styles.safeArea, backgroundStyle]}>
+        <SafeAreaView style={[styles.safeArea, styles.backgroundStyle]}>
             <StatusBar
                 barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-                backgroundColor={backgroundStyle.backgroundColor}
+                backgroundColor={styles.backgroundStyle.backgroundColor}
             />
             <Text style={[styles.highlight, styles.textShadow]}>Terms and Conditions for ChickenFarm</Text>
 
@@ -97,17 +104,20 @@ function TermnsScreen({ navigation }): JSX.Element {
                 <Text style={[styles.highlight, styles.textShadow, styles.longText]}>
                     For any questions or concerns regarding these Terms and Conditions, please contact us at balazsdomokos88@gmail.com.
                 </Text>
+
                 <View style={styles.buttonContainer}>
                     <CheckBox
                         disabled={false}
-                        value={isAcceptedTheTermsAndConditions}
-                        onValueChange={(isAccepted) => setIsAcceptedTheTermsAndConditions(isAccepted)}
+                        value={checkedAgree}
+                        onValueChange={(isAccepted) => setCheckedAgree(isAccepted)}
                     />
                     <Button
-                        title="Accept all"
-                        onPress={() => {
-                            handleLogin();
-                            navigation.navigate('InitScreen')
+                        title="Accept the Terms and Conditions"
+                        disabled={!checkedAgree}
+                        onPress={() => {                            
+                            if (checkedAgree) {
+                                navigation.navigate('Login')
+                            }                            
                         }}
                     />
                 </View>
@@ -117,6 +127,9 @@ function TermnsScreen({ navigation }): JSX.Element {
 }
 
 const styles = StyleSheet.create({
+    backgroundStyle: {
+        backgroundColor: 'saddlebrown',
+    },
     safeArea: {
         flex: 1,
     },

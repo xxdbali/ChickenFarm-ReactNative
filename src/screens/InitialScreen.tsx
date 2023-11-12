@@ -57,6 +57,7 @@ function InitialScreen({ navigation }): JSX.Element {
     );
 }
 
+// styles sections
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
